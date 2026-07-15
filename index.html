@@ -258,16 +258,9 @@
         }
 
         .sticker {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            transition: all 0.2s;
             position: relative;
-            width: 3cm;
-            height: 3cm;
+            overflow: hidden;
+            transition: all 0.2s;
         }
 
         .sticker:hover {
@@ -276,21 +269,26 @@
             z-index: 20;
         }
 
+        /* Para stickers redondos: contenedor cuadrado que luego se recorta */
         .sticker.round {
             border-radius: 50%;
+            border: 1px solid #ddd;
         }
 
         .sticker.square {
             border-radius: 4px;
+            border: 1px solid #ddd;
         }
 
+        /* La imagen SIEMPRE llena el contenedor completamente */
         .sticker img {
             width: 100% !important;
             height: 100% !important;
             object-fit: cover !important;
             display: block;
-            min-width: 100%;
-            min-height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .info-panel {
@@ -490,7 +488,7 @@
 
             <div class="action-buttons">
                 <button class="btn btn-secondary" onclick="clearImages()">Limpiar</button>
-                <button class="btn btn-primary" onclick="printSheet()">️ Imprimir / PDF</button>
+                <button class="btn btn-primary" onclick="printSheet()">🖨️ Imprimir / PDF</button>
             </div>
         </div>
 
@@ -657,6 +655,7 @@
             const usableWidth = availableWidth - (padding * 2) - (config.safeMargin * 2);
             const usableHeight = availableHeight - (padding * 2) - (config.safeMargin * 2);
             
+            // Calcular cuántos stickers caben
             const cols = Math.floor((usableWidth + config.spacing) / (config.stickerWidth + config.spacing));
             const rows = Math.floor((usableHeight + config.spacing) / (config.stickerHeight + config.spacing));
             const total = Math.max(cols * rows, 0);
