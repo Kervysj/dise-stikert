@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticker Designer Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: fit-content;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-option {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .btn-option.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-option:hover:not(.active) {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            background: #eef0ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area p {
+            color: #667eea;
+            font-weight: 600;
+            margin: 10px 0 5px 0;
+        }
+
+        .upload-area small {
+            color: #999;
+            font-size: 12px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .image-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .image-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .image-thumb.selected {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .preview-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: auto;
+        }
+
+        .sheet-wrapper {
+            background: #e0e0e0;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            overflow: auto;
+            max-width: 100%;
+        }
+
+        .sheet {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* A4 Portrait */
+        .sheet.portrait.a4 {
+            width: 21cm;
+            height: 29.7cm;
+        }
+
+        /* A4 Landscape */
+        .sheet.landscape.a4 {
+            width: 29.7cm;
+            height: 21cm;
+        }
+
+        /* Carta Portrait */
+        .sheet.portrait.letter {
+            width: 21.59cm;
+            height: 27.94cm;
+        }
+
+        /* Carta Landscape */
+        .sheet.landscape.letter {
+            width: 27.94cm;
+            height: 21.59cm;
+        }
+
+        /* Safe margin indicator */
+        .safe-margin {
+            position: absolute;
+            top: 5mm;
+            left: 5mm;
+            right: 5mm;
+            bottom: 5mm;
+            border: 2px dashed #ff4444;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .safe-margin::before {
+            content: 'Zona Segura de Impresión';
+            position: absolute;
+            top: -22px;
+            left: 0;
+            background: #ff4444;
+            color: white;
+            padding: 2px 10px;
+            font-size: 11px;
+            border-radius: 3px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .danger-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 68, 68, 0.08) 10px,
+                rgba(255, 68, 68, 0.08) 20px
+            );
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .stickers-container {
+            display: grid;
+            gap: 0.8cm;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            padding: 1cm;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .sticker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .sticker:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 20;
+        }
+
+        .sticker.round {
+            border-radius: 50%;
+        }
+
+        .sticker.square {
+            border-radius: 4px;
+        }
+
+        .sticker img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .info-panel {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .info-item .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .info-item .label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border: 2px dashed #ff4444;
+            border-radius: 3px;
+        }
+
+        .legend-box.fill {
+            background: rgba(255, 68, 68, 0.1);
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .sheet-wrapper, .sheet-wrapper * {
+                visibility: visible;
+            }
+            .sheet-wrapper {
+                position: absolute;
+                left: 0;
+                top: 0;
+                padding: 0;
+                background: none;
+            }
+            .sheet {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+            .safe-margin, .danger-zone {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sheet.portrait, .sheet.landscape {
+                transform: scale(0.6);
+                transform-origin: top center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>🎨 Sticker Designer Pro</h1>
+
+            <div class="control-group">
+                <label>Tamaño de Hoja</label>
+                <div class="btn-group">
+                    <div class="btn-option active" onclick="setPaperSize('A4')">A4</div>
+                    <div class="btn-option" onclick="setPaperSize('letter')">Carta</div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Orientación</label>
+                <div class="btn-group">
+                    <div class="btn-option active" id="btnPortrait" onclick="setOrientation('portrait')">Vertical </div>
+                    <div class="btn-option" id="btnLandscape" onclick="setOrientation('landscape')">Horizontal ↔</div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Forma del Sticker</label>
+                <div class="btn-group">
+                    <div class="btn-option active" onclick="setShape('round')">Redondo</div>
+                    <div class="btn-option" onclick="setShape('square')">Cuadrado</div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Tamaño del Sticker (cm)</label>
+                <select id="stickerSize" onchange="updateLayout()">
+                    <option value="2.5x2.5">2.5 x 2.5 cm</option>
+                    <option value="3x3">3 x 3 cm</option>
+                    <option value="3.5x3.5">3.5 x 3.5 cm</option>
+                    <option value="4x5">4 x 5 cm</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Espaciado entre stickers (cm)</label>
+                <input type="number" id="spacing" value="0.8" step="0.1" min="0" max="2"
+                       onchange="updateLayout()">
+            </div>
+
+            <div class="control-group">
+                <label>Margen de seguridad (mm)</label>
+                <input type="number" id="safeMargin" value="5" step="1" min="0" max="15"
+                       onchange="updateLayout()">
+                <small style="color: #999; display: block; margin-top: 5px;">
+                    ⚠️ Las impresoras no pueden imprimir hasta el borde. Recomendado: 5mm
+                </small>
+            </div>
+
+            <div class="control-group">
+                <label>Subir Imágenes</label>
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div style="font-size: 40px;">📁</div>
+                    <p>Arrastra o haz clic para subir</p>
+                    <small>PNG, JPG hasta 10MB</small>
+                </div>
+                <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(event)">
+                
+                <div class="images-grid" id="imagesGrid"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="clearImages()">Limpiar</button>
+                <button class="btn btn-primary" onclick="printSheet()">️ Imprimir / PDF</button>
+            </div>
+        </div>
+
+        <div class="preview-area">
+            <div class="sheet-wrapper">
+                <div id="sheet" class="sheet portrait a4">
+                    <div class="danger-zone"></div>
+                    <div class="safe-margin" id="safeMarginIndicator"></div>
+                    <div class="stickers-container" id="stickersContainer"></div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-box fill"></div>
+                    <span>Zona de riesgo (la impresora puede no imprimir)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box"></div>
+                    <span>Límite seguro de impresión</span>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <div class="info-item">
+                    <div class="value" id="totalStickers">0</div>
+                    <div class="label">Stickers por hoja</div>
+                </div>
+                <div class="info-item">
+                    <div class="value" id="sheetDimensions">210 × 297 mm</div>
+                    <div class="label">Dimensiones de hoja</div>
+                </div>
+                <div class="info-item">
+                    <div class="value" id="stickerDimensions">30 × 30 mm</div>
+                    <div class="label">Tamaño sticker</div>
+                </div>
+                <div class="info-item">
+                    <div class="value" id="gridInfo">6 × 9</div>
+                    <div class="label">Columnas × Filas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let config = {
+            paperSize: 'A4',
+            orientation: 'portrait',
+            shape: 'round',
+            stickerWidth: 3,
+            stickerHeight: 3,
+            spacing: 0.8,
+            safeMargin: 0.5 // 5mm en cm - margen seguro por defecto
+        };
+
+        let images = [];
+        let selectedImageIndex = 0;
+
+        const paperSizes = {
+            A4: { width: 21, height: 29.7, name: 'A4' },
+            letter: { width: 21.59, height: 27.94, name: 'Carta' }
+        };
+
+        function setPaperSize(size) {
+            config.paperSize = size;
+            document.querySelectorAll('.btn-option').forEach(btn => {
+                if (btn.textContent === 'A4' || btn.textContent === 'Carta') {
+                    btn.classList.remove('active');
+                }
+            });
+            event.target.classList.add('active');
+            updateLayout();
+        }
+
+        function setOrientation(orientation) {
+            config.orientation = orientation;
+            
+            // Update button states
+            document.getElementById('btnPortrait').classList.toggle('active', orientation === 'portrait');
+            document.getElementById('btnLandscape').classList.toggle('active', orientation === 'landscape');
+            
+            // Smooth transition
+            const sheet = document.getElementById('sheet');
+            sheet.style.opacity = '0';
+            sheet.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                updateLayout();
+                sheet.style.opacity = '1';
+                sheet.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        function setShape(shape) {
+            config.shape = shape;
+            document.querySelectorAll('.btn-option').forEach(btn => {
+                if (btn.textContent === 'Redondo' || btn.textContent === 'Cuadrado') {
+                    btn.classList.remove('active');
+                }
+            });
+            event.target.classList.add('active');
+            updateLayout();
+        }
+
+        function handleFiles(event) {
+            const files = event.target.files;
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    images.push(e.target.result);
+                    renderImageGrid();
+                    updateLayout();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function renderImageGrid() {
+            const grid = document.getElementById('imagesGrid');
+            grid.innerHTML = '';
+            images.forEach((img, index) => {
+                const imgEl = document.createElement('img');
+                imgEl.src = img;
+                imgEl.className = 'image-thumb' + (index === selectedImageIndex ? ' selected' : '');
+                imgEl.onclick = () => {
+                    selectedImageIndex = index;
+                    renderImageGrid();
+                    updateLayout();
+                };
+                grid.appendChild(imgEl);
+            });
+        }
+
+        function clearImages() {
+            images = [];
+            selectedImageIndex = 0;
+            renderImageGrid();
+            updateLayout();
+        }
+
+        function updateLayout() {
+            const sizeSelect = document.getElementById('stickerSize').value;
+            const [w, h] = sizeSelect.split('x').map(Number);
+            config.stickerWidth = w;
+            config.stickerHeight = h;
+            config.spacing = parseFloat(document.getElementById('spacing').value);
+            config.safeMargin = parseFloat(document.getElementById('safeMargin').value) / 10; // Convert mm to cm
+
+            const sheet = document.getElementById('sheet');
+            const container = document.getElementById('stickersContainer');
+            const safeMarginInd = document.getElementById('safeMarginIndicator');
+            const paper = paperSizes[config.paperSize];
+            
+            // Update sheet classes
+            sheet.className = `sheet ${config.orientation} ${config.paperSize}`;
+            
+            // Update safe margin indicator position
+            safeMarginInd.style.top = config.safeMargin + 'cm';
+            safeMarginInd.style.left = config.safeMargin + 'cm';
+            safeMarginInd.style.right = config.safeMargin + 'cm';
+            safeMarginInd.style.bottom = config.safeMargin + 'cm';
+            
+            // Clear container
+            container.innerHTML = '';
+            
+            // Calculate available space
+            const padding = 1; // 1cm padding base
+            const availableWidth = config.orientation === 'portrait' ? paper.width : paper.height;
+            const availableHeight = config.orientation === 'portrait' ? paper.height : paper.width;
+            const usableWidth = availableWidth - (padding * 2) - (config.safeMargin * 2);
+            const usableHeight = availableHeight - (padding * 2) - (config.safeMargin * 2);
+            
+            // Calculate grid
+            const cols = Math.floor((usableWidth + config.spacing) / (config.stickerWidth + config.spacing));
+            const rows = Math.floor((usableHeight + config.spacing) / (config.stickerHeight + config.spacing));
+            const total = Math.max(cols * rows, 0);
+
+            // Set grid template
+            container.style.gridTemplateColumns = `repeat(${cols}, ${config.stickerWidth}cm)`;
+            container.style.gridTemplateRows = `repeat(${rows}, ${config.stickerHeight}cm)`;
+            container.style.gap = config.spacing + 'cm';
+            container.style.padding = `${padding + config.safeMargin}cm`;
+
+            // Create stickers
+            for (let i = 0; i < total; i++) {
+                const sticker = document.createElement('div');
+                sticker.className = 'sticker ' + config.shape;
+                sticker.style.width = config.stickerWidth + 'cm';
+                sticker.style.height = config.stickerHeight + 'cm';
+
+                if (images.length > 0) {
+                    const img = document.createElement('img');
+                    img.src = images[i % images.length];
+                    sticker.appendChild(img);
+                }
+
+                container.appendChild(sticker);
+            }
+
+            // Update info
+            document.getElementById('totalStickers').textContent = total;
+            document.getElementById('sheetDimensions').textContent = 
+                `${paper.width * 10} × ${paper.height * 10} mm (${paper.name})`;
+            document.getElementById('stickerDimensions').textContent = 
+                `${config.stickerWidth * 10} × ${config.stickerHeight * 10} mm`;
+            document.getElementById('gridInfo').textContent = `${cols} × ${rows}`;
+        }
+
+        function printSheet() {
+            window.print();
+        }
+
+        // Initialize
+        updateLayout();
+
+        // Drag and drop
+        const uploadArea = document.querySelector('.upload-area');
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#eef0ff';
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.background = '#f8f9ff';
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#f8f9ff';
+            const files = e.dataTransfer.files;
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        images.push(e.target.result);
+                        renderImageGrid();
+                        updateLayout();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
