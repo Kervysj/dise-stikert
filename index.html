@@ -290,8 +290,27 @@
         .sticker img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover; /* CAMBIO: Ahora la imagen llena todo el sticker */
             display: block;
+        }
+
+        .image-fit-control {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .image-fit-control label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+
+        .image-fit-control input[type="radio"] {
+            cursor: pointer;
         }
 
         .info-panel {
@@ -469,6 +488,20 @@
             </div>
 
             <div class="control-group">
+                <label>Ajuste de Imagen</label>
+                <div class="image-fit-control">
+                    <label>
+                        <input type="radio" name="imageFit" value="cover" checked onchange="updateImageFit()">
+                        <span>Llenar sticker (puede recortar)</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="imageFit" value="contain" onchange="updateImageFit()">
+                        <span>Ver completa (puede dejar espacios)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="control-group">
                 <label>Margen de seguridad (mm)</label>
                 <input type="number" id="safeMargin" value="5" step="1" min="0" max="15"
                        onchange="updateLayout()">
@@ -491,7 +524,7 @@
 
             <div class="action-buttons">
                 <button class="btn btn-secondary" onclick="clearImages()">Limpiar</button>
-                <button class="btn btn-primary" onclick="printSheet()">️ Imprimir / PDF</button>
+                <button class="btn btn-primary" onclick="printSheet()">🖨️ Imprimir / PDF</button>
             </div>
         </div>
 
@@ -544,7 +577,8 @@
             stickerWidth: 3,
             stickerHeight: 3,
             spacing: 0.8,
-            safeMargin: 0.5 // 5mm en cm - margen seguro por defecto
+            safeMargin: 0.5,
+            imageFit: 'cover' // Nuevo: 'cover' o 'contain'
         };
 
         let images = [];
@@ -569,11 +603,9 @@
         function setOrientation(orientation) {
             config.orientation = orientation;
             
-            // Update button states
             document.getElementById('btnPortrait').classList.toggle('active', orientation === 'portrait');
             document.getElementById('btnLandscape').classList.toggle('active', orientation === 'landscape');
             
-            // Smooth transition
             const sheet = document.getElementById('sheet');
             sheet.style.opacity = '0';
             sheet.style.transform = 'scale(0.95)';
@@ -593,6 +625,12 @@
                 }
             });
             event.target.classList.add('active');
+            updateLayout();
+        }
+
+        function updateImageFit() {
+            const selected = document.querySelector('input[name="imageFit"]:checked');
+            config.imageFit = selected.value;
             updateLayout();
         }
 
@@ -638,44 +676,37 @@
             config.stickerWidth = w;
             config.stickerHeight = h;
             config.spacing = parseFloat(document.getElementById('spacing').value);
-            config.safeMargin = parseFloat(document.getElementById('safeMargin').value) / 10; // Convert mm to cm
+            config.safeMargin = parseFloat(document.getElementById('safeMargin').value) / 10;
 
             const sheet = document.getElementById('sheet');
             const container = document.getElementById('stickersContainer');
             const safeMarginInd = document.getElementById('safeMarginIndicator');
             const paper = paperSizes[config.paperSize];
             
-            // Update sheet classes
             sheet.className = `sheet ${config.orientation} ${config.paperSize}`;
             
-            // Update safe margin indicator position
             safeMarginInd.style.top = config.safeMargin + 'cm';
             safeMarginInd.style.left = config.safeMargin + 'cm';
             safeMarginInd.style.right = config.safeMargin + 'cm';
             safeMarginInd.style.bottom = config.safeMargin + 'cm';
             
-            // Clear container
             container.innerHTML = '';
             
-            // Calculate available space
-            const padding = 1; // 1cm padding base
+            const padding = 1;
             const availableWidth = config.orientation === 'portrait' ? paper.width : paper.height;
             const availableHeight = config.orientation === 'portrait' ? paper.height : paper.width;
             const usableWidth = availableWidth - (padding * 2) - (config.safeMargin * 2);
             const usableHeight = availableHeight - (padding * 2) - (config.safeMargin * 2);
             
-            // Calculate grid
             const cols = Math.floor((usableWidth + config.spacing) / (config.stickerWidth + config.spacing));
             const rows = Math.floor((usableHeight + config.spacing) / (config.stickerHeight + config.spacing));
             const total = Math.max(cols * rows, 0);
 
-            // Set grid template
             container.style.gridTemplateColumns = `repeat(${cols}, ${config.stickerWidth}cm)`;
             container.style.gridTemplateRows = `repeat(${rows}, ${config.stickerHeight}cm)`;
             container.style.gap = config.spacing + 'cm';
             container.style.padding = `${padding + config.safeMargin}cm`;
 
-            // Create stickers
             for (let i = 0; i < total; i++) {
                 const sticker = document.createElement('div');
                 sticker.className = 'sticker ' + config.shape;
@@ -685,13 +716,13 @@
                 if (images.length > 0) {
                     const img = document.createElement('img');
                     img.src = images[i % images.length];
+                    img.style.objectFit = config.imageFit; // Aplicar el ajuste seleccionado
                     sticker.appendChild(img);
                 }
 
                 container.appendChild(sticker);
             }
 
-            // Update info
             document.getElementById('totalStickers').textContent = total;
             document.getElementById('sheetDimensions').textContent = 
                 `${paper.width * 10} × ${paper.height * 10} mm (${paper.name})`;
@@ -704,10 +735,8 @@
             window.print();
         }
 
-        // Initialize
         updateLayout();
 
-        // Drag and drop
         const uploadArea = document.querySelector('.upload-area');
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
