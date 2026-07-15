@@ -6,11 +6,7 @@
     <title>Sticker Designer Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,7 +19,7 @@
             max-width: 1600px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 340px 1fr;
             gap: 20px;
         }
 
@@ -37,16 +33,9 @@
             overflow-y: auto;
         }
 
-        h1 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
+        h1 { color: #333; font-size: 24px; margin-bottom: 25px; text-align: center; }
 
-        .control-group {
-            margin-bottom: 20px;
-        }
+        .control-group { margin-bottom: 20px; }
 
         label {
             display: block;
@@ -56,11 +45,7 @@
             font-size: 14px;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
 
         .btn-option {
             flex: 1;
@@ -86,13 +71,15 @@
             background: #f0f0ff;
         }
 
-        select, input[type="number"] {
+        select, input[type="number"], input[type="range"] {
             width: 100%;
             padding: 10px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
         }
+
+        input[type="range"] { padding: 5px; }
 
         .upload-area {
             border: 3px dashed #667eea;
@@ -105,25 +92,11 @@
             margin-bottom: 20px;
         }
 
-        .upload-area:hover {
-            background: #eef0ff;
-            border-color: #764ba2;
-        }
+        .upload-area:hover { background: #eef0ff; border-color: #764ba2; }
+        .upload-area p { color: #667eea; font-weight: 600; margin: 10px 0 5px 0; }
+        .upload-area small { color: #999; font-size: 12px; }
 
-        .upload-area p {
-            color: #667eea;
-            font-weight: 600;
-            margin: 10px 0 5px 0;
-        }
-
-        .upload-area small {
-            color: #999;
-            font-size: 12px;
-        }
-
-        #fileInput, #posterFileInput {
-            display: none;
-        }
+        #fileInput, #posterFileInput { display: none; }
 
         .images-grid {
             display: grid;
@@ -135,8 +108,7 @@
         }
 
         .image-thumb {
-            width: 60px;
-            height: 60px;
+            width: 60px; height: 60px;
             border-radius: 8px;
             object-fit: cover;
             cursor: pointer;
@@ -144,10 +116,7 @@
             transition: all 0.3s;
         }
 
-        .image-thumb:hover {
-            transform: scale(1.1);
-        }
-
+        .image-thumb:hover { transform: scale(1.1); }
         .image-thumb.selected {
             border-color: #667eea;
             box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
@@ -170,18 +139,18 @@
             border-radius: 10px;
             margin-bottom: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 400px;
             overflow: auto;
             max-width: 100%;
+            gap: 20px;
         }
 
         .sheet {
             background: white;
             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
             position: relative;
-            transition: all 0.3s ease;
         }
 
         .sheet.portrait.a4 { width: 21cm; height: 29.7cm; }
@@ -191,42 +160,28 @@
 
         .safe-margin {
             position: absolute;
-            top: 5mm;
-            left: 5mm;
-            right: 5mm;
-            bottom: 5mm;
+            top: 5mm; left: 5mm; right: 5mm; bottom: 5mm;
             border: 2px dashed #ff4444;
             pointer-events: none;
             z-index: 10;
         }
 
         .safe-margin::before {
-            content: 'Zona Segura de Impresión';
+            content: 'Zona Segura';
             position: absolute;
-            top: -22px;
-            left: 0;
+            top: -22px; left: 0;
             background: #ff4444;
             color: white;
             padding: 2px 10px;
             font-size: 11px;
             border-radius: 3px;
             font-weight: 600;
-            white-space: nowrap;
         }
 
         .danger-zone {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(255, 68, 68, 0.08) 10px,
-                rgba(255, 68, 68, 0.08) 20px
-            );
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 68, 68, 0.08) 10px, rgba(255, 68, 68, 0.08) 20px);
             pointer-events: none;
             z-index: 5;
         }
@@ -235,16 +190,14 @@
             display: grid;
             position: relative;
             z-index: 1;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             padding: 1cm;
             justify-content: center;
             align-content: center;
         }
 
         .sticker {
-            width: 3cm;
-            height: 3cm;
+            width: 3cm; height: 3cm;
             position: relative;
             overflow: hidden;
             border: 1px solid #ddd;
@@ -259,41 +212,167 @@
 
         .sticker.round { border-radius: 50%; }
         .sticker.square { border-radius: 4px; }
+        .sticker img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        .sticker img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Poster mode styles */
-        .poster-container {
+        /* ============ POSTER MODE - NUEVO ============ */
+        .poster-stage {
             position: relative;
-            z-index: 1;
-            width: 100%;
-            height: 100%;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
             overflow: hidden;
+            cursor: grab;
         }
 
-        .poster-container img {
+        .poster-stage:active { cursor: grabbing; }
+
+        .poster-image {
             position: absolute;
+            transform-origin: 0 0;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .poster-image img {
+            display: block;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            pointer-events: none;
         }
 
-        .poster-info {
+        /* Grid lines - líneas de división de hojas */
+        .poster-grid-line {
             position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 2px 8px;
-            font-size: 10px;
-            border-radius: 3px;
-            z-index: 5;
+            background: #ff0000;
+            z-index: 50;
+            pointer-events: none;
         }
+
+        .poster-grid-line.horizontal {
+            width: 100%;
+            height: 2px;
+            left: 0;
+        }
+
+        .poster-grid-line.vertical {
+            height: 100%;
+            width: 2px;
+            top: 0;
+        }
+
+        /* Crop marks en las esquinas */
+        .crop-mark-corner {
+            position: absolute;
+            width: 15mm;
+            height: 15mm;
+            z-index: 55;
+            pointer-events: none;
+        }
+
+        .crop-mark-corner::before,
+        .crop-mark-corner::after {
+            content: '';
+            position: absolute;
+            background: #000;
+        }
+
+        .crop-mark-corner.tl::before { top: 0; left: 0; width: 100%; height: 2px; }
+        .crop-mark-corner.tl::after { top: 0; left: 0; width: 2px; height: 100%; }
+        .crop-mark-corner.tr::before { top: 0; right: 0; width: 100%; height: 2px; }
+        .crop-mark-corner.tr::after { top: 0; right: 0; width: 2px; height: 100%; }
+        .crop-mark-corner.bl::before { bottom: 0; left: 0; width: 100%; height: 2px; }
+        .crop-mark-corner.bl::after { bottom: 0; left: 0; width: 2px; height: 100%; }
+        .crop-mark-corner.br::before { bottom: 0; right: 0; width: 100%; height: 2px; }
+        .crop-mark-corner.br::after { bottom: 0; right: 0; width: 2px; height: 100%; }
+
+        /* Sheet number labels */
+        .sheet-number-label {
+            position: absolute;
+            background: rgba(255, 0, 0, 0.85);
+            color: white;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 3px;
+            z-index: 60;
+            pointer-events: none;
+        }
+
+        .poster-info-bar {
+            background: #333;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .poster-info-bar span { font-weight: 600; color: #ffd700; }
+
+        .zoom-display {
+            background: #f0f0ff;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .slider-value {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 10px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .poster-presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .preset-btn {
+            padding: 15px 10px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .preset-btn:hover { border-color: #667eea; background: #f0f0ff; }
+        .preset-btn.active { border-color: #667eea; background: #667eea; color: white; }
+        .preset-btn .size { font-size: 18px; display: block; margin-bottom: 5px; }
+        .preset-btn .desc { font-size: 11px; font-weight: normal; opacity: 0.8; }
+
+        .crop-options {
+            background: #f0f0ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .crop-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .crop-options input[type="checkbox"] { cursor: pointer; }
 
         .info-panel {
             background: #f8f9ff;
@@ -313,24 +392,10 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .info-item .value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #667eea;
-        }
+        .info-item .value { font-size: 28px; font-weight: bold; color: #667eea; }
+        .info-item .label { font-size: 12px; color: #666; margin-top: 5px; }
 
-        .info-item .label {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            width: 100%;
-        }
+        .action-buttons { display: flex; gap: 10px; margin-top: 20px; width: 100%; }
 
         .btn {
             flex: 1;
@@ -344,21 +409,13 @@
         }
 
         .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
+        .btn-primary:hover { background: #5568d3; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
         .btn-secondary { background: #e0e0e0; color: #333; }
         .btn-secondary:hover { background: #d0d0d0; }
-
         .btn-success { background: #4caf50; color: white; }
-        .btn-success:hover {
-            background: #43a047;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
+        .btn-success:hover { background: #43a047; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4); }
+        .btn-warning { background: #ff9800; color: white; }
+        .btn-warning:hover { background: #f57c00; }
 
         .legend {
             display: flex;
@@ -369,22 +426,10 @@
             justify-content: center;
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .legend-box {
-            width: 20px;
-            height: 20px;
-            border: 2px dashed #ff4444;
-            border-radius: 3px;
-        }
-
-        .legend-box.fill {
-            background: rgba(255, 68, 68, 0.1);
-        }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-box { width: 20px; height: 20px; border: 2px dashed #ff4444; border-radius: 3px; }
+        .legend-box.fill { background: rgba(255, 68, 68, 0.1); }
+        .legend-line { width: 20px; height: 3px; background: #ff0000; }
 
         .mode-selector {
             display: flex;
@@ -408,27 +453,11 @@
             text-align: center;
         }
 
-        .mode-btn.active {
-            border-color: #667eea;
-            background: #667eea;
-            color: white;
-        }
+        .mode-btn.active { border-color: #667eea; background: #667eea; color: white; }
 
-        .poster-controls {
-            display: none;
-        }
-
-        .poster-controls.active {
-            display: block;
-        }
-
-        .sticker-controls {
-            display: block;
-        }
-
-        .sticker-controls.hidden {
-            display: none;
-        }
+        .poster-controls { display: none; }
+        .poster-controls.active { display: block; }
+        .sticker-controls.hidden { display: none; }
 
         .poster-preview-info {
             background: #fff3cd;
@@ -439,53 +468,37 @@
             font-size: 13px;
         }
 
-        .poster-preview-info strong {
-            color: #856404;
+        .poster-preview-info strong { color: #856404; }
+
+        .hint-box {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #2e7d32;
         }
 
-        /* Print styles - CORREGIDO */
         @media print {
-            @page {
-                margin: 0 !important;
-                size: auto;
-            }
-
+            @page { margin: 0 !important; size: auto; }
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                color-adjust: exact !important;
             }
-
-            body {
-                margin: 0 !important;
-                padding: 0 !important;
-                background: white !important;
-            }
-
-            .no-print {
-                display: none !important;
-            }
-
-            .print-only {
-                display: block !important;
-            }
-
+            body { margin: 0 !important; padding: 0 !important; background: white !important; }
+            .no-print { display: none !important; }
             .sheet {
                 box-shadow: none !important;
                 margin: 0 !important;
                 page-break-after: always;
                 page-break-inside: avoid;
             }
-
-            .safe-margin, .danger-zone {
-                display: none !important;
-            }
+            .safe-margin, .danger-zone { display: none !important; }
         }
 
         @media (max-width: 1024px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
+            .container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -494,13 +507,12 @@
         <div class="sidebar no-print">
             <h1> Sticker Designer Pro</h1>
 
-            <!-- Mode Selector -->
             <div class="mode-selector">
-                <div class="mode-btn active" onclick="setMode('stickers')">️ Stickers</div>
-                <div class="mode-btn" onclick="setMode('poster')">️ Poster/Tile</div>
+                <div class="mode-btn active" onclick="setMode('stickers')">🏷️ Stickers</div>
+                <div class="mode-btn" onclick="setMode('poster')">🖼️ Poster</div>
             </div>
 
-            <!-- STICKER MODE CONTROLS -->
+            <!-- STICKER MODE -->
             <div class="sticker-controls" id="stickerControls">
                 <div class="control-group">
                     <label>Tamaño de Hoja</label>
@@ -513,8 +525,8 @@
                 <div class="control-group">
                     <label>Orientación</label>
                     <div class="btn-group">
-                        <div class="btn-option active" id="btnPortrait" onclick="setOrientation('portrait')">Vertical </div>
-                        <div class="btn-option" id="btnLandscape" onclick="setOrientation('landscape')">Horizontal ↔</div>
+                        <div class="btn-option active" id="btnPortrait" onclick="setOrientation('portrait')">Vertical</div>
+                        <div class="btn-option" id="btnLandscape" onclick="setOrientation('landscape')">Horizontal</div>
                     </div>
                 </div>
 
@@ -544,9 +556,6 @@
                 <div class="control-group">
                     <label>Margen de seguridad (mm)</label>
                     <input type="number" id="safeMargin" value="5" step="1" min="0" max="15" onchange="updateLayout()">
-                    <small style="color: #999; display: block; margin-top: 5px;">
-                        ⚠️ Las impresoras no pueden imprimir hasta el borde. Recomendado: 5mm
-                    </small>
                 </div>
 
                 <div class="control-group">
@@ -562,31 +571,49 @@
 
                 <div class="action-buttons">
                     <button class="btn btn-secondary" onclick="clearImages()">Limpiar</button>
-                    <button class="btn btn-success" onclick="exportPNG()">📥 Exportar PNG</button>
-                    <button class="btn btn-primary" onclick="printSheet()">🖨️ Imprimir</button>
+                    <button class="btn btn-success" onclick="exportPNG()"> PNG</button>
+                    <button class="btn btn-primary" onclick="printSheet()">️ Imprimir</button>
                 </div>
             </div>
 
-            <!-- POSTER MODE CONTROLS -->
+            <!-- POSTER MODE -->
             <div class="poster-controls" id="posterControls">
                 <div class="poster-preview-info">
-                    <strong>🖼️ Modo Poster/Tile:</strong><br>
-                    Sube una imagen grande y divídela en múltiples hojas para imprimir como poster.
+                    <strong>🖼️ Modo Poster:</strong><br>
+                    Sube tu imagen, estírala como quieras y verás la cuadrícula de hojas para recortar.
+                </div>
+
+                <div class="hint-box">
+                    💡 <strong>Tip:</strong> Arrastra la imagen para moverla. Usa el zoom para estirarla. La cuadrícula roja muestra dónde cortar.
                 </div>
 
                 <div class="control-group">
-                    <label>Tamaño de Hoja</label>
-                    <div class="btn-group">
-                        <div class="btn-option active" onclick="setPosterPaperSize('A4')">A4</div>
-                        <div class="btn-option" onclick="setPosterPaperSize('letter')">Carta</div>
+                    <label>Presets de División (Hojas Carta)</label>
+                    <div class="poster-presets">
+                        <div class="preset-btn active" onclick="setPosterPreset(2, 1)">
+                            <span class="size">2×1</span>
+                            <span class="desc">2 hojas</span>
+                        </div>
+                        <div class="preset-btn" onclick="setPosterPreset(2, 2)">
+                            <span class="size">2×2</span>
+                            <span class="desc">4 hojas</span>
+                        </div>
+                        <div class="preset-btn" onclick="setPosterPreset(2, 3)">
+                            <span class="size">2×3</span>
+                            <span class="desc">6 hojas</span>
+                        </div>
+                        <div class="preset-btn" onclick="setPosterPreset(3, 3)">
+                            <span class="size">3×3</span>
+                            <span class="desc">9 hojas</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label>Orientación</label>
+                    <label>Orientación de Hojas</label>
                     <div class="btn-group">
-                        <div class="btn-option active" id="posterBtnPortrait" onclick="setPosterOrientation('portrait')">Vertical </div>
-                        <div class="btn-option" id="posterBtnLandscape" onclick="setPosterOrientation('landscape')">Horizontal ↔</div>
+                        <div class="btn-option active" id="posterBtnPortrait" onclick="setPosterOrientation('portrait')">Vertical</div>
+                        <div class="btn-option" id="posterBtnLandscape" onclick="setPosterOrientation('landscape')">Horizontal</div>
                     </div>
                 </div>
 
@@ -601,13 +628,32 @@
                 </div>
 
                 <div class="control-group">
-                    <label>Hoja de ancho (columnas)</label>
-                    <input type="number" id="posterCols" value="2" min="1" max="10" onchange="updatePosterLayout()">
+                    <label>🔍 Zoom / Escala de Imagen</label>
+                    <input type="range" id="posterZoom" min="50" max="300" value="100" step="5" oninput="updatePosterTransform()">
+                    <div class="zoom-display">Escala: <span id="zoomValue">100</span>%</div>
                 </div>
 
                 <div class="control-group">
-                    <label>Hoja de alto (filas)</label>
-                    <input type="number" id="posterRows" value="2" min="1" max="10" onchange="updatePosterLayout()">
+                    <label>↔️ Posición Horizontal (X)</label>
+                    <input type="range" id="posterPosX" min="-100" max="100" value="0" step="1" oninput="updatePosterTransform()">
+                    <div style="text-align:center; font-size:12px; color:#666;">
+                        Valor: <span id="posXValue" class="slider-value">0</span> cm
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>↕️ Posición Vertical (Y)</label>
+                    <input type="range" id="posterPosY" min="-100" max="100" value="0" step="1" oninput="updatePosterTransform()">
+                    <div style="text-align:center; font-size:12px; color:#666;">
+                        Valor: <span id="posYValue" class="slider-value">0</span> cm
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="keepAspect" checked onchange="updatePosterTransform()">
+                        Mantener proporción de imagen
+                    </label>
                 </div>
 
                 <div class="control-group">
@@ -615,42 +661,56 @@
                     <input type="number" id="posterSafeMargin" value="5" step="1" min="0" max="15" onchange="updatePosterLayout()">
                 </div>
 
+                <div class="crop-options">
+                    <label>
+                        <input type="checkbox" id="showGridLines" checked onchange="updatePosterLayout()">
+                        Mostrar cuadrícula de corte
+                    </label>
+                    <label>
+                        <input type="checkbox" id="showCropMarks" checked onchange="updatePosterLayout()">
+                        Mostrar marcas de recorte (esquinas)
+                    </label>
+                    <label>
+                        <input type="checkbox" id="showSheetNumbers" checked onchange="updatePosterLayout()">
+                        Mostrar números de hoja
+                    </label>
+                </div>
+
                 <div class="action-buttons">
-                    <button class="btn btn-success" onclick="exportAllPosterPNG()"> Exportar Todo PNG</button>
+                    <button class="btn btn-warning" onclick="resetPosterTransform()">🔄 Reset</button>
+                    <button class="btn btn-success" onclick="exportAllPosterPNG()">📥 PNG</button>
                     <button class="btn btn-primary" onclick="printPoster()">🖨️ Imprimir</button>
                 </div>
             </div>
         </div>
 
         <div class="preview-area">
-            <div class="sheet-wrapper" id="sheetWrapper">
-                <!-- Content will be rendered here -->
+            <div class="poster-info-bar no-print" id="posterInfoBar" style="display:none;">
+                📐 Tamaño total: <span id="totalSize">-</span> | 
+                📄 Hojas: <span id="totalSheets">-</span> | 
+                🖱️ Arrastra la imagen para moverla
             </div>
+            <div class="sheet-wrapper" id="sheetWrapper"></div>
 
             <div class="legend no-print">
                 <div class="legend-item">
                     <div class="legend-box fill"></div>
-                    <span>Zona de riesgo (la impresora puede no imprimir)</span>
+                    <span>Zona de riesgo de impresión</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-box"></div>
-                    <span>Límite seguro de impresión</span>
+                    <div class="legend-line"></div>
+                    <span>Línea de corte entre hojas</span>
                 </div>
             </div>
 
-            <div class="info-panel no-print" id="infoPanel">
-                <!-- Info will be rendered here -->
-            </div>
+            <div class="info-panel no-print" id="infoPanel"></div>
         </div>
     </div>
 
-    <!-- Print container (hidden, used for printing) -->
-    <div id="printContainer" style="display: none;"></div>
-
     <script>
-        // ==================== CONFIGURATION ====================
+        // ==================== CONFIG ====================
         let config = {
-            mode: 'stickers', // 'stickers' or 'poster'
+            mode: 'stickers',
             paperSize: 'A4',
             orientation: 'portrait',
             shape: 'round',
@@ -661,23 +721,35 @@
         };
 
         let posterConfig = {
-            paperSize: 'A4',
+            paperSize: 'letter',
             orientation: 'portrait',
             cols: 2,
             rows: 2,
             safeMargin: 0.5,
-            image: null
+            image: null,
+            imageWidth: 0,
+            imageHeight: 0,
+            zoom: 100,
+            posX: 0,
+            posY: 0,
+            keepAspect: true,
+            showGridLines: true,
+            showCropMarks: true,
+            showSheetNumbers: true
         };
 
         let images = [];
         let selectedImageIndex = 0;
+        let isDragging = false;
+        let dragStartX = 0, dragStartY = 0;
+        let dragStartPosX = 0, dragStartPosY = 0;
 
         const paperSizes = {
             A4: { width: 21, height: 29.7, name: 'A4' },
             letter: { width: 21.59, height: 27.94, name: 'Carta' }
         };
 
-        // ==================== MODE SWITCHING ====================
+        // ==================== MODE ====================
         function setMode(mode) {
             config.mode = mode;
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
@@ -686,21 +758,21 @@
             if (mode === 'stickers') {
                 document.getElementById('stickerControls').classList.remove('hidden');
                 document.getElementById('posterControls').classList.remove('active');
+                document.getElementById('posterInfoBar').style.display = 'none';
                 updateLayout();
             } else {
                 document.getElementById('stickerControls').classList.add('hidden');
                 document.getElementById('posterControls').classList.add('active');
+                document.getElementById('posterInfoBar').style.display = 'flex';
                 updatePosterLayout();
             }
         }
 
-        // ==================== STICKER MODE ====================
+        // ==================== STICKER ====================
         function setPaperSize(size) {
             config.paperSize = size;
             document.querySelectorAll('#stickerControls .btn-option').forEach(btn => {
-                if (btn.textContent === 'A4' || btn.textContent === 'Carta') {
-                    btn.classList.remove('active');
-                }
+                if (btn.textContent === 'A4' || btn.textContent === 'Carta') btn.classList.remove('active');
             });
             event.target.classList.add('active');
             updateLayout();
@@ -716,9 +788,7 @@
         function setShape(shape) {
             config.shape = shape;
             document.querySelectorAll('#stickerControls .btn-option').forEach(btn => {
-                if (btn.textContent === 'Redondo' || btn.textContent === 'Cuadrado') {
-                    btn.classList.remove('active');
-                }
+                if (btn.textContent === 'Redondo' || btn.textContent === 'Cuadrado') btn.classList.remove('active');
             });
             event.target.classList.add('active');
             updateLayout();
@@ -744,21 +814,12 @@
                 const imgEl = document.createElement('img');
                 imgEl.src = img;
                 imgEl.className = 'image-thumb' + (index === selectedImageIndex ? ' selected' : '');
-                imgEl.onclick = () => {
-                    selectedImageIndex = index;
-                    renderImageGrid();
-                    updateLayout();
-                };
+                imgEl.onclick = () => { selectedImageIndex = index; renderImageGrid(); updateLayout(); };
                 grid.appendChild(imgEl);
             });
         }
 
-        function clearImages() {
-            images = [];
-            selectedImageIndex = 0;
-            renderImageGrid();
-            updateLayout();
-        }
+        function clearImages() { images = []; selectedImageIndex = 0; renderImageGrid(); updateLayout(); }
 
         function updateLayout() {
             const sizeSelect = document.getElementById('stickerSize').value;
@@ -770,9 +831,8 @@
 
             const wrapper = document.getElementById('sheetWrapper');
             const paper = paperSizes[config.paperSize];
-            
             wrapper.innerHTML = '';
-            
+
             const sheet = document.createElement('div');
             sheet.className = `sheet ${config.orientation} ${config.paperSize}`;
             sheet.id = 'printSheet';
@@ -797,7 +857,7 @@
             const availableHeight = config.orientation === 'portrait' ? paper.height : paper.width;
             const usableWidth = availableWidth - (padding * 2) - (config.safeMargin * 2);
             const usableHeight = availableHeight - (padding * 2) - (config.safeMargin * 2);
-            
+
             const cols = Math.floor((usableWidth + config.spacing) / (config.stickerWidth + config.spacing));
             const rows = Math.floor((usableHeight + config.spacing) / (config.stickerHeight + config.spacing));
             const total = Math.max(cols * rows, 0);
@@ -818,43 +878,30 @@
                     img.src = images[i % images.length];
                     sticker.appendChild(img);
                 }
-
                 container.appendChild(sticker);
             }
 
             sheet.appendChild(container);
             wrapper.appendChild(sheet);
 
-            // Update info
             document.getElementById('infoPanel').innerHTML = `
-                <div class="info-item">
-                    <div class="value">${total}</div>
-                    <div class="label">Stickers por hoja</div>
-                </div>
-                <div class="info-item">
-                    <div class="value">${paper.width * 10} × ${paper.height * 10} mm</div>
-                    <div class="label">Dimensiones de hoja</div>
-                </div>
-                <div class="info-item">
-                    <div class="value">${config.stickerWidth * 10} × ${config.stickerHeight * 10} mm</div>
-                    <div class="label">Tamaño sticker</div>
-                </div>
-                <div class="info-item">
-                    <div class="value">${cols} × ${rows}</div>
-                    <div class="label">Columnas × Filas</div>
-                </div>
+                <div class="info-item"><div class="value">${total}</div><div class="label">Stickers por hoja</div></div>
+                <div class="info-item"><div class="value">${paper.width * 10} × ${paper.height * 10} mm</div><div class="label">Dimensiones de hoja</div></div>
+                <div class="info-item"><div class="value">${config.stickerWidth * 10} × ${config.stickerHeight * 10} mm</div><div class="label">Tamaño sticker</div></div>
+                <div class="info-item"><div class="value">${cols} × ${rows}</div><div class="label">Columnas × Filas</div></div>
             `;
         }
 
         // ==================== POSTER MODE ====================
-        function setPosterPaperSize(size) {
-            posterConfig.paperSize = size;
-            document.querySelectorAll('#posterControls .btn-option').forEach(btn => {
-                if (btn.textContent === 'A4' || btn.textContent === 'Carta') {
-                    btn.classList.remove('active');
-                }
-            });
-            event.target.classList.add('active');
+        function setPosterPreset(cols, rows) {
+            posterConfig.cols = cols;
+            posterConfig.rows = rows;
+            document.getElementById('posterCols') && (document.getElementById('posterCols').value = cols);
+            document.getElementById('posterRows') && (document.getElementById('posterRows').value = rows);
+
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.preset-btn').classList.add('active');
+
             updatePosterLayout();
         }
 
@@ -870,366 +917,399 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    posterConfig.image = e.target.result;
-                    updatePosterLayout();
+                    const img = new Image();
+                    img.onload = function() {
+                        posterConfig.image = e.target.result;
+                        posterConfig.imageWidth = img.width;
+                        posterConfig.imageHeight = img.height;
+                        // Auto-fit: calcular zoom para que la imagen llene el poster
+                        autoFitImage();
+                        updatePosterLayout();
+                    };
+                    img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
 
+        function autoFitImage() {
+            if (!posterConfig.image) return;
+            const paper = paperSizes[posterConfig.paperSize];
+            const isLandscape = posterConfig.orientation === 'landscape';
+            const posterWidth = isLandscape ? paper.height : paper.width;
+            const posterHeight = isLandscape ? paper.width : paper.height;
+            const totalWidth = posterWidth * posterConfig.cols;
+            const totalHeight = posterHeight * posterConfig.rows;
+
+            // Calcular zoom para que la imagen llene el poster
+            const scaleX = (totalWidth / posterConfig.imageWidth) * 100;
+            const scaleY = (totalHeight / posterConfig.imageHeight) * 100;
+            const fitZoom = Math.max(scaleX, scaleY);
+
+            posterConfig.zoom = Math.round(fitZoom);
+            document.getElementById('posterZoom').value = posterConfig.zoom;
+            document.getElementById('zoomValue').textContent = posterConfig.zoom;
+
+            // Centrar
+            posterConfig.posX = 0;
+            posterConfig.posY = 0;
+            document.getElementById('posterPosX').value = 0;
+            document.getElementById('posterPosY').value = 0;
+        }
+
+        function updatePosterTransform() {
+            posterConfig.zoom = parseInt(document.getElementById('posterZoom').value);
+            posterConfig.posX = parseInt(document.getElementById('posterPosX').value);
+            posterConfig.posY = parseInt(document.getElementById('posterPosY').value);
+            posterConfig.keepAspect = document.getElementById('keepAspect').checked;
+
+            document.getElementById('zoomValue').textContent = posterConfig.zoom;
+            document.getElementById('posXValue').textContent = posterConfig.posX;
+            document.getElementById('posYValue').textContent = posterConfig.posY;
+
+            applyPosterTransform();
+        }
+
+        function applyPosterTransform() {
+            const imgEl = document.getElementById('posterImageEl');
+            if (!imgEl) return;
+
+            const scale = posterConfig.zoom / 100;
+            const offsetX = posterConfig.posX;
+            const offsetY = posterConfig.posY;
+
+            imgEl.style.transform = `translate(${offsetX}cm, ${offsetY}cm) scale(${scale})`;
+        }
+
+        function resetPosterTransform() {
+            if (posterConfig.image) {
+                autoFitImage();
+            } else {
+                posterConfig.zoom = 100;
+                posterConfig.posX = 0;
+                posterConfig.posY = 0;
+                document.getElementById('posterZoom').value = 100;
+                document.getElementById('posterPosX').value = 0;
+                document.getElementById('posterPosY').value = 0;
+            }
+            document.getElementById('zoomValue').textContent = posterConfig.zoom;
+            document.getElementById('posXValue').textContent = posterConfig.posX;
+            document.getElementById('posYValue').textContent = posterConfig.posY;
+            applyPosterTransform();
+        }
+
         function updatePosterLayout() {
-            posterConfig.cols = parseInt(document.getElementById('posterCols').value) || 2;
-            posterConfig.rows = parseInt(document.getElementById('posterRows').value) || 2;
+            posterConfig.cols = parseInt(document.getElementById('posterCols')?.value) || 2;
+            posterConfig.rows = parseInt(document.getElementById('posterRows')?.value) || 2;
             posterConfig.safeMargin = parseFloat(document.getElementById('posterSafeMargin').value) / 10;
+            posterConfig.showGridLines = document.getElementById('showGridLines').checked;
+            posterConfig.showCropMarks = document.getElementById('showCropMarks').checked;
+            posterConfig.showSheetNumbers = document.getElementById('showSheetNumbers').checked;
 
             const wrapper = document.getElementById('sheetWrapper');
             wrapper.innerHTML = '';
 
             const paper = paperSizes[posterConfig.paperSize];
-            const totalSheets = posterConfig.cols * posterConfig.rows;
+            const isLandscape = posterConfig.orientation === 'landscape';
+            const sheetWidth = isLandscape ? paper.height : paper.width;
+            const sheetHeight = isLandscape ? paper.width : paper.height;
+            const totalWidth = sheetWidth * posterConfig.cols;
+            const totalHeight = sheetHeight * posterConfig.rows;
 
-            for (let i = 0; i < totalSheets; i++) {
-                const sheet = document.createElement('div');
-                sheet.className = `sheet ${posterConfig.orientation} ${posterConfig.paperSize}`;
-                sheet.id = `posterSheet${i}`;
-                sheet.style.marginBottom = '20px';
+            // Crear el stage del poster (tamaño total)
+            const stage = document.createElement('div');
+            stage.className = 'poster-stage';
+            stage.style.width = totalWidth + 'cm';
+            stage.style.height = totalHeight + 'cm';
+            stage.id = 'posterStage';
 
-                const dangerZone = document.createElement('div');
-                dangerZone.className = 'danger-zone';
-                sheet.appendChild(dangerZone);
+            // Zona segura
+            const dangerZone = document.createElement('div');
+            dangerZone.className = 'danger-zone';
+            stage.appendChild(dangerZone);
 
-                const safeMargin = document.createElement('div');
-                safeMargin.className = 'safe-margin';
-                safeMargin.style.top = posterConfig.safeMargin + 'cm';
-                safeMargin.style.left = posterConfig.safeMargin + 'cm';
-                safeMargin.style.right = posterConfig.safeMargin + 'cm';
-                safeMargin.style.bottom = posterConfig.safeMargin + 'cm';
-                sheet.appendChild(safeMargin);
+            // Imagen
+            if (posterConfig.image) {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'poster-image';
+                imgContainer.id = 'posterImageContainer';
+                imgContainer.style.width = posterConfig.imageWidth + 'px';
+                imgContainer.style.height = posterConfig.imageHeight + 'px';
 
-                const container = document.createElement('div');
-                container.className = 'poster-container';
+                const imgEl = document.createElement('img');
+                imgEl.src = posterConfig.image;
+                imgEl.id = 'posterImageEl';
+                imgContainer.appendChild(imgEl);
+                stage.appendChild(imgContainer);
 
-                if (posterConfig.image) {
-                    const img = document.createElement('img');
-                    img.src = posterConfig.image;
-                    
-                    // Calculate position
-                    const col = i % posterConfig.cols;
-                    const row = Math.floor(i / posterConfig.cols);
-                    
-                    const leftPercent = (col / posterConfig.cols) * 100;
-                    const topPercent = (row / posterConfig.rows) * 100;
-                    const widthPercent = (1 / posterConfig.cols) * 100;
-                    const heightPercent = (1 / posterConfig.rows) * 100;
-                    
-                    img.style.left = `-${leftPercent}%`;
-                    img.style.top = `-${topPercent}%`;
-                    img.style.width = `${posterConfig.cols * 100}%`;
-                    img.style.height = `${posterConfig.rows * 100}%`;
-                    
-                    container.appendChild(img);
+                // Drag to move
+                stage.addEventListener('mousedown', startDrag);
+                stage.addEventListener('touchstart', startDrag, { passive: false });
 
-                    const info = document.createElement('div');
-                    info.className = 'poster-info';
-                    info.textContent = `Hoja ${i + 1} de ${totalSheets} (${col + 1},${row + 1})`;
-                    container.appendChild(info);
-                }
-
-                sheet.appendChild(container);
-                wrapper.appendChild(sheet);
+                applyPosterTransform();
             }
 
-            // Update info
-            const totalWidth = paper.width * posterConfig.cols;
-            const totalHeight = paper.height * posterConfig.rows;
+            // Grid lines
+            if (posterConfig.showGridLines) {
+                for (let c = 1; c < posterConfig.cols; c++) {
+                    const line = document.createElement('div');
+                    line.className = 'poster-grid-line vertical';
+                    line.style.left = (c * sheetWidth) + 'cm';
+                    stage.appendChild(line);
+                }
+                for (let r = 1; r < posterConfig.rows; r++) {
+                    const line = document.createElement('div');
+                    line.className = 'poster-grid-line horizontal';
+                    line.style.top = (r * sheetHeight) + 'cm';
+                    stage.appendChild(line);
+                }
+            }
+
+            // Crop marks en esquinas del poster total
+            if (posterConfig.showCropMarks) {
+                const corners = ['tl', 'tr', 'bl', 'br'];
+                const positions = [
+                    { cls: 'tl', style: { top: '0', left: '0' } },
+                    { cls: 'tr', style: { top: '0', right: '0' } },
+                    { cls: 'bl', style: { bottom: '0', left: '0' } },
+                    { cls: 'br', style: { bottom: '0', right: '0' } }
+                ];
+                positions.forEach(pos => {
+                    const mark = document.createElement('div');
+                    mark.className = 'crop-mark-corner ' + pos.cls;
+                    Object.assign(mark.style, pos.style);
+                    stage.appendChild(mark);
+                });
+            }
+
+            // Sheet numbers
+            if (posterConfig.showSheetNumbers && posterConfig.image) {
+                let sheetNum = 1;
+                for (let r = 0; r < posterConfig.rows; r++) {
+                    for (let c = 0; c < posterConfig.cols; c++) {
+                        const label = document.createElement('div');
+                        label.className = 'sheet-number-label';
+                        label.textContent = `${sheetNum}/${posterConfig.cols * posterConfig.rows}`;
+                        label.style.left = (c * sheetWidth + 0.3) + 'cm';
+                        label.style.top = (r * sheetHeight + 0.3) + 'cm';
+                        stage.appendChild(label);
+                        sheetNum++;
+                    }
+                }
+            }
+
+            wrapper.appendChild(stage);
+
+            // Info
+            document.getElementById('totalSize').textContent = `${totalWidth.toFixed(1)} × ${totalHeight.toFixed(1)} cm`;
+            document.getElementById('totalSheets').textContent = posterConfig.cols * posterConfig.rows;
+
             document.getElementById('infoPanel').innerHTML = `
-                <div class="info-item">
-                    <div class="value">${totalSheets}</div>
-                    <div class="label">Hojas totales</div>
-                </div>
-                <div class="info-item">
-                    <div class="value">${posterConfig.cols} × ${posterConfig.rows}</div>
-                    <div class="label">Columnas × Filas</div>
-                </div>
-                <div class="info-item">
-                    <div class="value">${totalWidth.toFixed(1)} × ${totalHeight.toFixed(1)} cm</div>
-                    <div class="label">Tamaño total del poster</div>
-                </div>
-                <div class="info-item">
-                    <div class="value">${paper.name}</div>
-                    <div class="label">Tamaño de hoja</div>
-                </div>
+                <div class="info-item"><div class="value">${posterConfig.cols * posterConfig.rows}</div><div class="label">Hojas totales</div></div>
+                <div class="info-item"><div class="value">${posterConfig.cols} × ${posterConfig.rows}</div><div class="label">Columnas × Filas</div></div>
+                <div class="info-item"><div class="value">${totalWidth.toFixed(1)} × ${totalHeight.toFixed(1)} cm</div><div class="label">Tamaño total poster</div></div>
+                <div class="info-item"><div class="value">${paper.name}</div><div class="label">Tamaño de hoja</div></div>
             `;
         }
 
-        // ==================== EXPORT PNG ====================
+        // ==================== DRAG ====================
+        function startDrag(e) {
+            if (!posterConfig.image) return;
+            e.preventDefault();
+            isDragging = true;
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            dragStartX = clientX;
+            dragStartY = clientY;
+            dragStartPosX = posterConfig.posX;
+            dragStartPosY = posterConfig.posY;
+
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchmove', onDrag, { passive: false });
+            document.addEventListener('touchend', stopDrag);
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            // Convertir pixels a cm (aproximado: 1cm ≈ 37.8px a 96dpi)
+            const pxPerCm = 37.8;
+            const dx = (clientX - dragStartX) / pxPerCm;
+            const dy = (clientY - dragStartY) / pxPerCm;
+
+            posterConfig.posX = Math.round(dragStartPosX + dx);
+            posterConfig.posY = Math.round(dragStartPosY + dy);
+
+            // Clamp
+            posterConfig.posX = Math.max(-100, Math.min(100, posterConfig.posX));
+            posterConfig.posY = Math.max(-100, Math.min(100, posterConfig.posY));
+
+            document.getElementById('posterPosX').value = posterConfig.posX;
+            document.getElementById('posterPosY').value = posterConfig.posY;
+            document.getElementById('posXValue').textContent = posterConfig.posX;
+            document.getElementById('posYValue').textContent = posterConfig.posY;
+
+            applyPosterTransform();
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchmove', onDrag);
+            document.removeEventListener('touchend', stopDrag);
+        }
+
+        // ==================== EXPORT ====================
         async function exportPNG() {
             const sheet = document.getElementById('printSheet');
-            if (!sheet) {
-                alert('No hay contenido para exportar');
-                return;
-            }
+            if (!sheet) { alert('No hay contenido'); return; }
 
-            // Temporarily hide safe margin and danger zone
             const safeMargin = sheet.querySelector('.safe-margin');
             const dangerZone = sheet.querySelector('.danger-zone');
             if (safeMargin) safeMargin.style.display = 'none';
             if (dangerZone) dangerZone.style.display = 'none';
 
             try {
-                const canvas = await html2canvas(sheet, {
-                    scale: 3, // High resolution
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff'
-                });
-
+                const canvas = await html2canvas(sheet, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' });
                 const link = document.createElement('a');
                 link.download = `stickers_${config.paperSize}_${config.orientation}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-            } catch (error) {
-                alert('Error al exportar: ' + error.message);
-            } finally {
+            } catch (error) { alert('Error: ' + error.message); }
+            finally {
                 if (safeMargin) safeMargin.style.display = '';
                 if (dangerZone) dangerZone.style.display = '';
             }
         }
 
         async function exportAllPosterPNG() {
-            if (!posterConfig.image) {
-                alert('Primero sube una imagen para el poster');
-                return;
-            }
+            if (!posterConfig.image) { alert('Sube una imagen primero'); return; }
 
-            const sheets = document.querySelectorAll('[id^="posterSheet"]');
-            
-            for (let i = 0; i < sheets.length; i++) {
-                const sheet = sheets[i];
-                const safeMargin = sheet.querySelector('.safe-margin');
-                const dangerZone = sheet.querySelector('.danger-zone');
-                if (safeMargin) safeMargin.style.display = 'none';
-                if (dangerZone) dangerZone.style.display = 'none';
+            const stage = document.getElementById('posterStage');
+            if (!stage) return;
 
-                try {
-                    const canvas = await html2canvas(sheet, {
-                        scale: 3,
-                        useCORS: true,
-                        allowTaint: true,
-                        backgroundColor: '#ffffff'
-                    });
+            // Ocultar elementos de UI temporalmente
+            const gridLines = stage.querySelectorAll('.poster-grid-line');
+            const labels = stage.querySelectorAll('.sheet-number-label');
+            const cropMarks = stage.querySelectorAll('.crop-mark-corner');
 
-                    const link = document.createElement('a');
-                    link.download = `poster_hoja_${i + 1}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
+            gridLines.forEach(el => el.style.display = 'none');
+            labels.forEach(el => el.style.display = 'none');
+            cropMarks.forEach(el => el.style.display = 'none');
 
-                    // Small delay between downloads
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                } catch (error) {
-                    alert('Error al exportar hoja ' + (i + 1) + ': ' + error.message);
-                } finally {
-                    if (safeMargin) safeMargin.style.display = '';
-                    if (dangerZone) dangerZone.style.display = '';
-                }
+            try {
+                const canvas = await html2canvas(stage, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' });
+                const link = document.createElement('a');
+                link.download = `poster_${posterConfig.cols}x${posterConfig.rows}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (error) { alert('Error: ' + error.message); }
+            finally {
+                gridLines.forEach(el => el.style.display = '');
+                labels.forEach(el => el.style.display = '');
+                cropMarks.forEach(el => el.style.display = '');
             }
         }
 
         // ==================== PRINT ====================
         function printSheet() {
             const sheet = document.getElementById('printSheet');
-            if (!sheet) {
-                alert('No hay contenido para imprimir');
-                return;
-            }
+            if (!sheet) { alert('No hay contenido'); return; }
 
-            // Create print window
             const printWindow = window.open('', '_blank');
             const paper = paperSizes[config.paperSize];
             const isLandscape = config.orientation === 'landscape';
             const width = isLandscape ? paper.height : paper.width;
             const height = isLandscape ? paper.width : paper.height;
 
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Stickers - ${config.paperSize}</title>
-                    <style>
-                        @page {
-                            size: ${width}cm ${height}cm;
-                            margin: 0;
-                        }
-                        * {
-                            margin: 0;
-                            padding: 0;
-                            box-sizing: border-box;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                        }
-                        body {
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .sheet {
-                            width: ${width}cm;
-                            height: ${height}cm;
-                            position: relative;
-                            background: white;
-                            overflow: hidden;
-                        }
-                        .stickers-container {
-                            display: grid;
-                            width: 100%;
-                            height: 100%;
-                            padding: 1cm;
-                            justify-content: center;
-                            align-content: center;
-                        }
-                        .sticker {
-                            position: relative;
-                            overflow: hidden;
-                            border: 1px solid #ddd;
-                        }
-                        .sticker.round { border-radius: 50%; }
-                        .sticker.square { border-radius: 4px; }
-                        .sticker img {
-                            width: 100%;
-                            height: 100%;
-                            object-fit: cover;
-                            display: block;
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${sheet.outerHTML}
-                </body>
-                </html>
-            `);
-
+            printWindow.document.write(`<!DOCTYPE html><html><head><title>Stickers</title>
+                <style>
+                    @page { size: ${width}cm ${height}cm; margin: 0; }
+                    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                    body { margin: 0; padding: 0; }
+                    .sheet { width: ${width}cm; height: ${height}cm; position: relative; background: white; overflow: hidden; }
+                    .stickers-container { display: grid; width: 100%; height: 100%; padding: 1cm; justify-content: center; align-content: center; }
+                    .sticker { position: relative; overflow: hidden; border: 1px solid #ddd; }
+                    .sticker.round { border-radius: 50%; }
+                    .sticker.square { border-radius: 4px; }
+                    .sticker img { width: 100%; height: 100%; object-fit: cover; display: block; }
+                </style></head><body>${sheet.outerHTML}</body></html>`);
             printWindow.document.close();
-            
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
-            }, 500);
+            setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
         }
 
         function printPoster() {
-            if (!posterConfig.image) {
-                alert('Primero sube una imagen para el poster');
-                return;
-            }
+            if (!posterConfig.image) { alert('Sube una imagen primero'); return; }
 
-            const sheets = document.querySelectorAll('[id^="posterSheet"]');
             const paper = paperSizes[posterConfig.paperSize];
             const isLandscape = posterConfig.orientation === 'landscape';
-            const width = isLandscape ? paper.height : paper.width;
-            const height = isLandscape ? paper.width : paper.height;
+            const sheetWidth = isLandscape ? paper.height : paper.width;
+            const sheetHeight = isLandscape ? paper.width : paper.height;
+            const totalWidth = sheetWidth * posterConfig.cols;
+            const totalHeight = sheetHeight * posterConfig.rows;
 
             const printWindow = window.open('', '_blank');
-            
-            let sheetsHTML = '';
-            sheets.forEach(sheet => {
-                const clone = sheet.cloneNode(true);
-                const safeMargin = clone.querySelector('.safe-margin');
-                const dangerZone = clone.querySelector('.danger-zone');
-                const posterInfo = clone.querySelector('.poster-info');
-                if (safeMargin) safeMargin.remove();
-                if (dangerZone) dangerZone.remove();
-                if (posterInfo) posterInfo.remove();
-                sheetsHTML += clone.outerHTML;
-            });
 
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Poster - ${posterConfig.cols}x${posterConfig.rows} ${posterConfig.paperSize}</title>
-                    <style>
-                        @page {
-                            size: ${width}cm ${height}cm;
-                            margin: 0;
-                        }
-                        * {
-                            margin: 0;
-                            padding: 0;
-                            box-sizing: border-box;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                        }
-                        body {
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .sheet {
-                            width: ${width}cm;
-                            height: ${height}cm;
-                            position: relative;
-                            background: white;
-                            overflow: hidden;
-                            page-break-after: always;
-                        }
-                        .sheet:last-child {
-                            page-break-after: auto;
-                        }
-                        .poster-container {
-                            position: relative;
-                            width: 100%;
-                            height: 100%;
-                            overflow: hidden;
-                        }
-                        .poster-container img {
-                            position: absolute;
-                            width: 100%;
-                            height: 100%;
-                            object-fit: cover;
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${sheetsHTML}
-                </body>
-                </html>
-            `);
+            // Generar cada hoja como una página separada
+            let pagesHTML = '';
+            let sheetNum = 1;
 
-            printWindow.document.close();
-            
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
-            }, 500);
-        }
+            for (let r = 0; r < posterConfig.rows; r++) {
+                for (let c = 0; c < posterConfig.cols; c++) {
+                    const scale = posterConfig.zoom / 100;
+                    const offsetX = posterConfig.posX;
+                    const offsetY = posterConfig.posY;
 
-        // ==================== DRAG AND DROP ====================
-        const uploadArea = document.querySelector('.upload-area');
-        if (uploadArea) {
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.style.background = '#eef0ff';
-            });
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.style.background = '#f8f9ff';
-            });
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.style.background = '#f8f9ff';
-                const files = e.dataTransfer.files;
-                for (let file of files) {
-                    if (file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            images.push(e.target.result);
-                            renderImageGrid();
-                            updateLayout();
-                        };
-                        reader.readAsDataURL(file);
-                    }
+                    // Calcular posición de la imagen relativa a esta hoja
+                    // La imagen está en el stage total, necesitamos mostrar solo la porción de esta hoja
+                    const imgLeftInStage = offsetX; // cm
+                    const imgTopInStage = offsetY; // cm
+                    const imgWidthInStage = (posterConfig.imageWidth * scale) / 37.8; // convertir px a cm
+                    const imgHeightInStage = (posterConfig.imageHeight * scale) / 37.8;
+
+                    // Posición de esta hoja en el stage
+                    const sheetLeftInStage = c * sheetWidth;
+                    const sheetTopInStage = r * sheetHeight;
+
+                    // Calcular offset de la imagen dentro de esta hoja
+                    const imgOffsetX = imgLeftInStage - sheetLeftInStage;
+                    const imgOffsetY = imgTopInStage - sheetTopInStage;
+
+                    pagesHTML += `
+                        <div class="sheet" style="width:${sheetWidth}cm; height:${sheetHeight}cm; position:relative; overflow:hidden; background:white; page-break-after:always;">
+                            <div style="position:absolute; left:${imgOffsetX}cm; top:${imgOffsetY}cm; width:${imgWidthInStage}cm; height:${imgHeightInStage}cm;">
+                                <img src="${posterConfig.image}" style="width:100%; height:100%; object-fit:fill; display:block;">
+                            </div>
+                            <div style="position:absolute; bottom:2mm; right:2mm; background:rgba(0,0,0,0.7); color:white; padding:2px 8px; font-size:10px; border-radius:3px; font-weight:600;">
+                                Hoja ${sheetNum}/${posterConfig.cols * posterConfig.rows}
+                            </div>
+                        </div>
+                    `;
+                    sheetNum++;
                 }
-            });
+            }
+
+            printWindow.document.write(`<!DOCTYPE html><html><head><title>Poster ${posterConfig.cols}x${posterConfig.rows}</title>
+                <style>
+                    @page { size: ${sheetWidth}cm ${sheetHeight}cm; margin: 0; }
+                    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                    body { margin: 0; padding: 0; }
+                    .sheet { page-break-after: always; }
+                    .sheet:last-child { page-break-after: auto; }
+                </style></head><body>${pagesHTML}</body></html>`);
+            printWindow.document.close();
+            setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
         }
 
-        // Initialize
+        // ==================== INIT ====================
         updateLayout();
     </script>
 </body>
